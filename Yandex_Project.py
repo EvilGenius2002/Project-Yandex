@@ -1,5 +1,4 @@
 import sys
-
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import QWidget, QApplication, QLineEdit, QPushButton, \
     QLabel
@@ -44,14 +43,14 @@ class Example(QWidget):
     def change(self):
         if self.sender().text() == "Числа":
             self.percents.setText("A и B доминантные - " + str(
-                self.AB) + "; A доминнатный, B рецессивный - " + str(
+                self.AB) + "; A доминантный, B рецессивный - " + str(
                 self.A) + ";\nB доминантный, A рецессивный - " + str(
                 self.B) + "; нет доминантных - " + str(
                 self.ab) + ".")
             self.changeView.setText("Проценты")
         else:
             self.percents.setText("A и B доминантные - " + str(float(
-                self.AB) / 16.0 * 100) + "%; A доминнатный, B рецессивный - " + str(
+                self.AB) / 16.0 * 100) + "%; A доминантный, B рецессивный - " + str(
                 float(
                     self.A) /
                 16.0 * 100) + "%;\nB доминантный, A рецессивный - " + str(
@@ -71,61 +70,75 @@ class Example(QWidget):
         else:
             parent1 = self.parent1.text()
             parent2 = self.parent2.text()
-            self.parent1.setText("")
-            self.parent2.setText("")
-            if len(parent1) != len(parent2):
+            if not ('a' in parent1.lower()) or not ('b' in parent1.lower(
+            )) or parent1.lower() != parent2.lower():
                 self.error.show()
-            elif len(parent1) == 4:
-                results = [[], []]
-                buttons = []
-                for i in range(2):
-                    for i1 in range(2, 4):
-                        li = []
-                        li1 = []
-                        li.append([parent1[i]])
-                        li.append([parent1[i1]])
-                        li1.append([parent2[i]])
-                        li1.append([parent2[i1]])
-                        results[0].append(li)
-                        results[1].append(li1)
-                for i in range(4):
-                    for i2 in range(4):
-                        res = ''
-                        for i1 in range(2):
-                            res += ''.join(
-                                results[0][i][i1] + results[1][i2][i1])
-                        buttons.append(res)
-                for i in range(4):
-                    for i1 in range(4):
-                        self.bu = QPushButton(self)
-                        self.bu.setText(buttons[i * 4 + i1])
-                        self.bu.setGeometry(130 + 60 * i1, 310 + 60 * i, 60,
-                                            60)
-                        self.bu.show()
-                        self.bu.clicked.connect(self.click)
-                for i in buttons:
-                    if ('A' in i) and ('B' in i):
-                        self.AB += 1
-                    elif 'A' in i:
-                        self.A += 1
-                    elif 'B' in i:
-                        self.B += 1
-                    else:
-                        self.ab += 1
-                self.percents.setText(
-                    "A и B доминантные - " + str(float(self.AB) /
-                                                 16.0 *
-                                                 100) +
-                    "%; A доминнатный, B рецессивный - " +
-                    str(float(self.A) / 16.0 * 100) +
-                    "%;\nB доминантный, A рецессивный - " +
-                    str(float(self.B) / 16.0 * 100) +
-                    "%; нет доминантных - " + str(float(
-                        self.ab) /
-                                                  16.0 * 100) +
-                    "% случаев.")
-                self.percents.show()
-                self.changeView.show()
+            else:
+                if len(parent1) != len(parent2):
+                    self.error.show()
+                elif len(parent1) == 4:
+                    results = [[], []]
+                    buttons = []
+                    for i in range(2):
+                        for i1 in range(2, 4):
+                            li = []
+                            li1 = []
+                            li.append([parent1[i]])
+                            li.append([parent1[i1]])
+                            li1.append([parent2[i]])
+                            li1.append([parent2[i1]])
+                            results[0].append(li)
+                            results[1].append(li1)
+                    for i in range(4):
+                        for i2 in range(4):
+                            res_for_now = ''
+                            for i1 in range(2):
+                                res_for_now += ''.join(
+                                    results[0][i][i1] + results[1][i2][i1])
+                            buttons.append(res_for_now)
+                    for i in range(4):
+                        for i1 in range(4):
+                            self.bu = QPushButton(self)
+                            self.bu.setText(buttons[i * 4 + i1])
+                            self.bu.setGeometry(130 + 60 * i1, 310 + 60 * i,
+                                                60,
+                                                60)
+                            if ('A' in self.bu.text()) and (
+                                    'B' in self.bu.text()):
+                                self.bu.setStyleSheet("background-color: red")
+                            elif 'A' in self.bu.text():
+                                self.bu.setStyleSheet("background-color: blue")
+                            elif 'B' in self.bu.text():
+                                self.bu.setStyleSheet(
+                                    "background-color: green")
+                            else:
+                                self.bu.setStyleSheet(
+                                    "background-color: rgb(238,130,238)")
+                            self.bu.show()
+                            self.bu.clicked.connect(self.click)
+                    for i in buttons:
+                        if ('A' in i) and ('B' in i):
+                            self.AB += 1
+                        elif 'A' in i:
+                            self.A += 1
+                        elif 'B' in i:
+                            self.B += 1
+                        else:
+                            self.ab += 1
+                    self.percents.setText(
+                        "A и B доминантные - " + str(float(self.AB) /
+                                                     16.0 *
+                                                     100) +
+                        "%; A доминантный, B рецессивный - " +
+                        str(float(self.A) / 16.0 * 100) +
+                        "%;\nB доминантный, A рецессивный - " +
+                        str(float(self.B) / 16.0 * 100) +
+                        "%; нет доминантных - " + str(float(
+                            self.ab) /
+                                                      16.0 * 100) +
+                        "% случаев.")
+                    self.percents.show()
+                    self.changeView.show()
 
     def click(self):
         if self.clicks % 2 == 0:
